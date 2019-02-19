@@ -20,6 +20,7 @@
    # ![Gif of amount and updates](./images/Amount.gif "Amount and Updates")
    # <p> The user will be required to enter a valid number.
  # <h2> View Price and Updated List
+   # ![Image of price total and new table] (./images/Total.png "Totals")
   # <p> As shown above in the GIF of the purchase you will see the total price of the purchase as well as a new updated list of items and          quantities. 
-  # ![Image of price total and new table] (./images/Total.png "Totals")
+
   
