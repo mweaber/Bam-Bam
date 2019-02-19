@@ -30,7 +30,7 @@ function listAll(){
         var data = [];
         console.log("-------- Here is our current inventory --------");
         for (var i = 0; i < res.length; i++) {
-            data.push(["ID: " + res[i].ID, res[i].product_name, res[i].department_name, ("$" + res[i].price + ".00"), (res[i].stock_quantity + " qty")]);           
+            data.push(["ID: " + res[i].id, res[i].product_name, res[i].department_name, ("$" + res[i].price + ".00"), (res[i].stock_quantity + " qty")]);           
         }
         var output = table(data);
         console.log(output);
@@ -99,7 +99,7 @@ function purchaseItem() {
                 var oldQ = res[a].stock_quantity;
                 var newQ = oldQ-amount;
                 var priceTotal = res[a].price * amount;
-                if (a >= 0) {
+                if (a >= 0 && newQ >= 0) {
                     console.log("Please wait while we finish processing");
                     connection.query("UPDATE products SET ? WHERE ?", [
                             {
