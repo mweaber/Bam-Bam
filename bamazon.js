@@ -3,7 +3,6 @@ var inquirer = require("inquirer");
 var {
     table
 } = require("table");
-var data = [];
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -11,29 +10,39 @@ var connection = mysql.createConnection({
     password: "veritas19",
     database: "bamazonDB"
 });
-listAll();
-function listAll() {
+
+startConnect();
+
+function startConnect() {
+    // Makes the connection and starts the list function 
+    // to show current inventory
     connection.connect(function (err) {
         if (err) throw err;
-        //   console.log("connected as id " + connection.threadId + "\n");
+        listAll();       
+    });
+}
 
-        connection.query("SELECT * FROM products", function (err, res) {
-
-
-            console.log("-------- Here is our current inventory --------");
-            for (var i = 0; i < res.length; i++) {
-                data.push(["ID: " + res[i].ID, res[i].product_name, res[i].department_name, ("$" + res[i].price + ".00"), (res[i].stock_quantity + " qty")]);
-                // console.log("ID: " + res[i].ID + " | " + res[i].product_name + " | " + res[i].department_name + " | " + "$" + res[i].price + ".00" + " | " + res[i].stock_quantity + " qty");
-            }
-            // console.log("-----------------------------------");
-            var output = table(data);
-            console.log(output);
-            start();
-        });
+function listAll(){
+    // Makes connection query and gathers all stock
+    // and will console.log the results with the table npm
+    // which will then start the inquire.
+    connection.query("SELECT * FROM products", function (err, res) {
+        var data = [];
+        console.log("-------- Here is our current inventory --------");
+        for (var i = 0; i < res.length; i++) {
+            data.push(["ID: " + res[i].ID, res[i].product_name, res[i].department_name, ("$" + res[i].price + ".00"), (res[i].stock_quantity + " qty")]);           
+        }
+        var output = table(data);
+        console.log(output);
+        start();
     });
 }
 
 function start() {
+    // Start inquire and ask for user input
+    // and gives option to end. It also hold a 
+    // validate in the input field to verify what is entered
+    // is a valid number. Once all is entered the purchase function runs.
     inquirer
         .prompt({
             name: "buyOrExit",
@@ -42,7 +51,6 @@ function start() {
             choices: ["BUY", "EXIT"]
         })
         .then(function (answer) {
-            // based on their answer, either call the bid or the post functions
             if (answer.buyOrExit === "BUY") {
 
                 purchaseItem();
@@ -53,19 +61,23 @@ function start() {
 }
 
 function purchaseItem() {
+    // On start will gather all products from the table.
+    // Next it will loop over the products and put them into an 
+    // array which will populate the choices. 
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
+        var choiceArray = [];
         inquirer
             .prompt([{
                     name: "ID",
                     type: "rawlist",
                     message: "Please select an item you'd like to purchase?",
                     choices: function () {
-                        var choiceArray = [];
+
                         for (var j = 0; j < res.length; j++) {
                             choiceArray.push(res[j].product_name);
                         }
-                        // console.log(choiceArray);
+
                         return choiceArray;
                     }
                 },
@@ -81,23 +93,33 @@ function purchaseItem() {
                     }
                 }
             ]).then(function (answer) {
-                console.log(answer);
-                // if (ID.stock_quantity < parseInt(answer.bid)) {
-                    // console.log("Please try again, unable to process.")
-                    // purchaseItem();
-    //             } else {
-    //                 console.log("Please wait while we finish your order");
-    //                 // connection.query(
-    //                 //     console.log("Are we making this work?")
-    //                 //     // "UPDATE products SET ? WHERE ?",
-    //                 //     // [{
-    //                 //     //     stock_quantity: stock_quantity - answer.bid
-    //                 //     // }]
-                        
-    //                 // )
-    //             //   listAll();  
-    //             }
-
+                // In this return from the inquire I will update products and display all info.
+                var amount = parseInt(answer.quantity);
+                var a = choiceArray.indexOf(answer.ID);
+                var oldQ = res[a].stock_quantity;
+                var newQ = oldQ-amount;
+                var priceTotal = res[a].price * amount;
+                if (a >= 0) {
+                    console.log("Please wait while we finish processing");
+                    connection.query("UPDATE products SET ? WHERE ?", [
+                            {
+                                stock_quantity: newQ,
+                            },
+                            {
+                                product_name: answer.ID
+                            }
+                        ],
+                        function (error) {
+                            if (error) throw err;
+                            console.log("Transaction Successful");
+                            console.log("Your total is: $" + priceTotal);
+                            listAll();                        
+                        }
+                    );
+                } else {
+                    console.log("Unable to process!");
+                    start();
+                }
             });
     });
 }
