@@ -11,3 +11,11 @@
     3. table
   # <h2> Viewing the Current Inventory:
    # ![Gif of inventory screen](./images/Inventory.gif "Inventory Display")
+   #<p> On start up the application should display to your user the current inventory of the store.</p>
+   #<p> The user will have access to the inquirer prompt to either buy an item or exit the application.</p>
+  # <h2> Purchase An Item 
+   # ![Gif of purchases](./images/Purchase.gif "Purchase Display")
+  #<p> On selecting the "BUY" option a list of items that can be purchased will show for the user.
+  #<p> After user will be asked to give an amount they would like to buy.
+    # ![Gif of amount and updates](./images/Amount.gif "Amount and Updates")
+  #<p> The user will be required to enter a valid number.
