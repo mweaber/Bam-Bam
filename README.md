@@ -15,7 +15,11 @@
    #<p> The user will have access to the inquirer prompt to either buy an item or exit the application.</p>
   # <h2> Purchase An Item 
    # ![Gif of purchases](./images/Purchase.gif "Purchase Display")
-  #<p> On selecting the "BUY" option a list of items that can be purchased will show for the user.
-  #<p> After user will be asked to give an amount they would like to buy.
+  # <p> On selecting the "BUY" option a list of items that can be purchased will show for the user.
+  # <p> After user will be asked to give an amount they would like to buy.
     # ![Gif of amount and updates](./images/Amount.gif "Amount and Updates")
-  #<p> The user will be required to enter a valid number.
+  # <p> The user will be required to enter a valid number.
+  # <h2> View Price and Updated List
+    # <p> As shown above in the GIF of the purchase you will see the total price of the purchase as well as a new updated list of items and quantities. 
+    # ![Image of price total and new table] (./images/Total.png "Totals")
+  
